@@ -1,0 +1,147 @@
+<!-- ========== CABEÇALHO (logo + abas) ========== -->
+<ion-header class="ion-no-border shell-header">
+  <!-- Marca -->
+  <ion-toolbar class="shell-brand">
+    <div class="brand" slot="start">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="36" height="36">
+          <rect width="32" height="32" rx="8" fill="currentColor"/>
+          <circle cx="8" cy="22" r="2.2" fill="#f7f4ee"/>
+          <circle cx="16" cy="16" r="2.2" fill="#f7f4ee"/>
+          <circle cx="24" cy="10" r="2.2" fill="#f7f4ee"/>
+          <path d="M9.8 20.6 14.2 17.4M17.8 14.8 22.1 11.6"
+                stroke="#f7f4ee" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Ronda</span>
+        <span class="brand-sub">PCM · Planta Norte</span>
+      </div>
+    </div>
+  </ion-toolbar>
+
+  <!-- Abas com rolagem horizontal -->
+  <ion-toolbar class="shell-nav">
+    <nav class="nav-scroll" aria-label="Seções">
+      @for (item of nav; track item.path) {
+        <a
+          class="nav-item"
+          [class.ativo]="item.ativo"
+          [routerLink]="item.path"
+          routerDirection="root"
+          [attr.aria-current]="item.ativo ? 'page' : null"
+        >
+          <ion-icon [name]="item.icon" aria-hidden="true"></ion-icon>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+      <button type="button" class="nav-item nav-gear" aria-label="Configurações" (click)="abrirConfig()">
+        <ion-icon name="settings-outline" aria-hidden="true"></ion-icon>
+      </button>
+    </nav>
+  </ion-toolbar>
+</ion-header>
+
+<!-- ========== CONTEÚDO ========== -->
+<ion-content [fullscreen]="true">
+  <div class="page">
+    @if (erro) {
+      <p class="erro">{{ erro }}</p>
+    }
+
+    <p class="kicker">{{ kicker }}</p>
+    <h1 class="titulo">Hoje na manutenção</h1>
+    <p class="subtitulo">
+      Monte a ronda, execute na sequência dos equipamentos e feche com a ordem de serviço.
+    </p>
+
+    <div class="acoes">
+      <ion-button class="btn-primario" routerLink="/nova-rota" routerDirection="forward">
+        Nova rota
+      </ion-button>
+      <ion-button class="btn-secundario" fill="outline" routerLink="/lista-rotas" routerDirection="forward">
+        Executar
+      </ion-button>
+    </div>
+
+    <section class="stats" aria-label="Indicadores">
+      @for (stat of stats; track stat.label) {
+        <button type="button" class="stat" (click)="abrir(stat.link)">
+          <span class="stat-label">{{ stat.label }}</span>
+          <span class="stat-valor">{{ stat.value }}</span>
+        </button>
+      }
+    </section>
+
+    <section class="bloco">
+      <h2 class="secao">Rotas para executar</h2>
+
+      @if (carregando) {
+        <div class="vazio">
+          <ion-spinner name="crescent"></ion-spinner>
+          <p>Carregando rotas…</p>
+        </div>
+      } @else if (rotas.length === 0) {
+        <div class="vazio">
+          <strong>Nenhuma rota aberta</strong>
+          <p>Crie uma rota com as técnicas e a ordem dos equipamentos.</p>
+        </div>
+      } @else {
+        <ul class="lista">
+          @for (rota of rotas; track rota.id) {
+            <li>
+              <button type="button" class="cartao" (click)="abrirExecucao(rota.id)">
+                <div class="cartao-topo">
+                  <div class="cartao-texto">
+                    <strong>{{ rota.nome }}</strong>
+                    <small>{{ rota.equipeNome || 'Sem equipe' }}</small>
+                  </div>
+                  <span class="badge" [class]="rota.status">{{ rotuloStatus(rota.status) }}</span>
+                </div>
+                <div class="barra" role="progressbar"
+                     [attr.aria-valuenow]="rota.doneCount"
+                     [attr.aria-valuemax]="rota.stopCount">
+                  <i [style.width.%]="progresso(rota)"></i>
+                </div>
+                <small class="progresso-txt">
+                  {{ rota.doneCount }} de {{ rota.stopCount }} equipamentos
+                </small>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <section class="bloco">
+      <h2 class="secao">Desvios recentes</h2>
+
+      @if (!carregando && alertas.length === 0) {
+        <div class="vazio">
+          <strong>Sem desvios</strong>
+          <p>Leituras de atenção e críticas aparecem aqui.</p>
+        </div>
+      } @else {
+        <ul class="lista">
+          @for (a of alertas; track a.id) {
+            <li>
+              <button type="button" class="cartao" (click)="abrir(a.link || '/lista-rotas')">
+                <div class="cartao-topo">
+                  <div class="cartao-texto">
+                    <strong class="mono">{{ a.tag }}</strong>
+                    <small>{{ a.machineName }}</small>
+                    <small>{{ a.techniqueLabel }} · {{ a.reading }}</small>
+                    @if (a.recordedLabel) {
+                      <small class="faint">{{ a.recordedLabel }} · {{ a.sourceLabel }}</small>
+                    }
+                  </div>
+                  <span class="badge" [class]="a.judgment">{{ rotuloJulgamento(a.judgment) }}</span>
+                </div>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  </div>
+</ion-content>

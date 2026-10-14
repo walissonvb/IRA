@@ -1,0 +1,7 @@
+{
+  "name": "IRA",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

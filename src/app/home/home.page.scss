@@ -1,0 +1,308 @@
+/* Home / Painel — alinhado à pré-visualização Ronda */
+
+:host {
+  --page-bg: #f3f1ec;
+  --card-bg: #fffcf7;
+  --line: #e4dfd4;
+  --ink: #1c1915;
+  --muted: #6d675f;
+  --accent: #1f4e5f;
+  --accent-fg: #f7f4ee;
+  --ok: #1f6b45;
+  --ok-bg: #e5f2ea;
+  --warn: #9a4d12;
+  --warn-bg: #f8ecdf;
+  --crit: #8d2a2a;
+  --crit-bg: #f8e6e4;
+  --radius: 16px;
+  --radius-btn: 12px;
+}
+
+ion-content {
+  --background: var(--page-bg);
+}
+
+ion-toolbar {
+  --background: var(--card-bg);
+  --border-color: var(--line);
+  --color: var(--ink);
+}
+
+.page {
+  padding: 16px 16px 32px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* —— Erro —— */
+.erro {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--crit-bg);
+  color: var(--crit);
+  font-size: 14px;
+}
+
+/* —— Cabeçalho —— */
+.kicker {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.titulo {
+  margin: 6px 0 0;
+  font-size: 1.65rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.subtitulo {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--muted);
+  max-width: 28rem;
+}
+
+/* —— Botões principais —— */
+.acoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 20px 0 18px;
+}
+
+.btn-primario {
+  --background: var(--accent);
+  --background-hover: #1b4554;
+  --background-activated: #183c4a;
+  --color: var(--accent-fg);
+  --border-radius: var(--radius-btn);
+  --box-shadow: none;
+  margin: 0;
+  font-weight: 600;
+  min-height: 48px;
+}
+
+.btn-secundario {
+  --background: var(--card-bg);
+  --color: var(--ink);
+  --border-color: var(--line);
+  --border-width: 1px;
+  --border-style: solid;
+  --border-radius: var(--radius-btn);
+  --box-shadow: none;
+  margin: 0;
+  font-weight: 600;
+  min-height: 48px;
+}
+
+/* —— Stats (empilhados no mobile, como na prévia) —— */
+.stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 480px) {
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.stat {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  min-height: 88px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.stat:active {
+  border-color: var(--accent);
+}
+
+.stat-label {
+  display: block;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.stat-valor {
+  display: block;
+  margin-top: 8px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+/* —— Seções —— */
+.bloco {
+  margin-bottom: 28px;
+}
+
+.secao {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* —— Vazio / loading —— */
+.vazio {
+  border: 1px solid var(--line);
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 18px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.vazio strong {
+  display: block;
+  color: var(--ink);
+  margin-bottom: 4px;
+  font-size: 15px;
+}
+
+.vazio p {
+  margin: 0;
+}
+
+.vazio ion-spinner {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+/* —— Cartões de rota / alerta —— */
+.cartao {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.cartao:active {
+  border-color: var(--accent);
+}
+
+.cartao-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.cartao-texto {
+  min-width: 0;
+}
+
+.cartao-texto strong,
+.cartao-texto small {
+  display: block;
+}
+
+.cartao-texto strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.cartao-texto small {
+  margin-top: 3px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.cartao-texto .faint {
+  opacity: 0.85;
+}
+
+.mono {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* —— Badge de status —— */
+.badge {
+  flex-shrink: 0;
+  display: inline-block;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  background: #e7eef1;
+  color: var(--accent);
+}
+
+.badge.em_execucao,
+.badge.atencao {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+.badge.concluida,
+.badge.normal {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+.badge.critico {
+  background: var(--crit-bg);
+  color: var(--crit);
+}
+
+/* —— Barra de progresso —— */
+.barra {
+  margin-top: 12px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.barra i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+
+.progresso-txt {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}

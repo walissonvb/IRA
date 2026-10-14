@@ -1,0 +1,492 @@
+/* =========================================================
+   Home / Painel — cabeçalho (logo + abas) + conteúdo
+   ========================================================= */
+
+:host {
+  --page-bg: #f3f1ec;
+  --card-bg: #fffcf7;
+  --line: #e4dfd4;
+  --ink: #1c1915;
+  --muted: #6d675f;
+  --accent: #1f4e5f;
+  --accent-fg: #f7f4ee;
+  --ok: #1f6b45;
+  --ok-bg: #e5f2ea;
+  --warn: #9a4d12;
+  --warn-bg: #f8ecdf;
+  --crit: #8d2a2a;
+  --crit-bg: #f8e6e4;
+  --radius: 16px;
+  --radius-btn: 12px;
+  --radius-pill: 999px;
+}
+
+/* ========== CABEÇALHO ========== */
+
+.shell-header {
+  /* permite a faixa de abas rolar sem ser cortada */
+  overflow: visible;
+
+  ion-toolbar {
+    --background: var(--card-bg);
+    --border-width: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+    --min-height: auto;
+    --overflow: visible;
+  }
+}
+
+.shell-brand {
+  --padding-top: 12px;
+  --padding-bottom: 4px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+}
+
+.brand-mark {
+  color: var(--accent);
+  display: flex;
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.brand-name {
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.brand-sub {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Abas com rolagem horizontal — FORA do ion-toolbar */
+.shell-nav {
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--line);
+  padding: 4px 0 12px;
+}
+
+.nav-scroll {
+  display: flex;
+  flex-wrap: nowrap;              /* nunca quebra linha */
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;               /* rolagem horizontal */
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  padding: 0 16px;
+  max-width: 100%;
+  scrollbar-width: none;          /* Firefox: esconde barra */
+}
+
+.nav-scroll::-webkit-scrollbar {
+  display: none;                  /* Chrome/Safari: esconde barra */
+}
+
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;                 /* NÃO encolhe — força overflow */
+  height: 40px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-item ion-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.nav-item.ativo {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.nav-item:not(.ativo):active {
+  background: rgba(31, 78, 95, 0.08);
+}
+
+.nav-gear {
+  margin-left: auto;
+  padding: 0 10px;
+}
+
+/* ========== CONTEÚDO ========== */
+
+ion-content {
+  --background: var(--page-bg);
+}
+
+.page {
+  padding: 16px 16px 32px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.erro {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--crit-bg);
+  color: var(--crit);
+  font-size: 14px;
+}
+
+.kicker {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.titulo {
+  margin: 6px 0 0;
+  font-size: 1.65rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.subtitulo {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--muted);
+  max-width: 28rem;
+}
+
+.acoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 20px 0 18px;
+}
+
+.btn-primario {
+  --background: var(--accent);
+  --background-hover: #1b4554;
+  --background-activated: #183c4a;
+  --color: var(--accent-fg);
+  --border-radius: var(--radius-btn);
+  --box-shadow: none;
+  margin: 0;
+  font-weight: 600;
+  min-height: 48px;
+}
+
+.btn-secundario {
+  --background: var(--card-bg);
+  --color: var(--ink);
+  --border-color: var(--line);
+  --border-width: 1px;
+  --border-style: solid;
+  --border-radius: var(--radius-btn);
+  --box-shadow: none;
+  margin: 0;
+  font-weight: 600;
+  min-height: 48px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 480px) {
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.stat {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  min-height: 88px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.stat:active {
+  border-color: var(--accent);
+}
+
+.stat-label {
+  display: block;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.stat-valor {
+  display: block;
+  margin-top: 8px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.bloco {
+  margin-bottom: 28px;
+}
+
+.secao {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vazio {
+  border: 1px solid var(--line);
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 18px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.vazio strong {
+  display: block;
+  color: var(--ink);
+  margin-bottom: 4px;
+  font-size: 15px;
+}
+
+.vazio p {
+  margin: 0;
+}
+
+.vazio ion-spinner {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.cartao {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.cartao:active {
+  border-color: var(--accent);
+}
+
+.cartao-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.cartao-texto {
+  min-width: 0;
+}
+
+.cartao-texto strong,
+.cartao-texto small {
+  display: block;
+}
+
+.cartao-texto strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.cartao-texto small {
+  margin-top: 3px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.cartao-texto .faint {
+  opacity: 0.85;
+}
+
+.mono {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.badge {
+  flex-shrink: 0;
+  display: inline-block;
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  background: #e7eef1;
+  color: var(--accent);
+}
+
+.badge.em_execucao,
+.badge.atencao {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+.badge.concluida,
+.badge.normal {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+.badge.critico {
+  background: var(--crit-bg);
+  color: var(--crit);
+}
+
+.barra {
+  margin-top: 12px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--line);
+  overflow: hidden;
+}
+
+.barra i {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+
+.progresso-txt {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ========== Específico da página Rotas ========== */
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.btn-compact {
+  min-height: 40px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.busca {
+  --background: var(--card-bg);
+  --border-radius: 12px;
+  --box-shadow: none;
+  --placeholder-color: var(--muted);
+  padding: 0 0 12px;
+}
+
+.codigo {
+  margin: 0 0 2px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.tecnicas {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.acoes-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.btn-fantasma {
+  --color: var(--muted);
+  margin: 0;
+  font-weight: 600;
+  min-height: 40px;
+}
+
+.btn-perigo {
+  --background: var(--crit);
+  --color: #fff;
+  --border-radius: var(--radius-btn);
+  --box-shadow: none;
+  margin: 0;
+  font-weight: 600;
+  min-height: 40px;
+}
+
+.erro-card {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--crit-bg);
+  color: var(--crit);
+  font-size: 13px;
+}
+
+/* Cartão não é mais button inteiro — é li com ações dentro */
+.lista .cartao {
+  cursor: default;
+}
+
+.lista .cartao:active {
+  border-color: var(--line);
+}

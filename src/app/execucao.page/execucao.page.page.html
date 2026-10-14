@@ -1,0 +1,204 @@
+<ion-header class="ion-no-border shell-header">
+  <ion-toolbar class="shell-brand">
+        <div class="brand" slot="start">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="36" height="36">
+          <rect width="32" height="32" rx="8" fill="currentColor"/>
+          <circle cx="8" cy="22" r="2.2" fill="#f7f4ee"/>
+          <circle cx="16" cy="16" r="2.2" fill="#f7f4ee"/>
+          <circle cx="24" cy="10" r="2.2" fill="#f7f4ee"/>
+          <path d="M9.8 20.6 14.2 17.4M17.8 14.8 22.1 11.6"
+                stroke="#f7f4ee" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Ronda</span>
+        <span class="brand-sub">PCM · Planta Norte</span>
+      </div>
+    </div>
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/execucao" text=""></ion-back-button>
+    </ion-buttons>
+    <div class="brand brand-inline" slot="start">
+    </div>
+  </ion-toolbar>
+    <div class="shell-nav">
+    <nav class="nav-scroll" aria-label="Seções">
+      @for (item of nav; track item.path) {
+        <a
+          class="nav-item"
+          [class.ativo]="item.ativo"
+          [routerLink]="item.path"
+          routerDirection="root"
+          [attr.aria-current]="item.ativo ? 'page' : null"
+        >
+          <ion-icon [name]="item.icon" aria-hidden="true"></ion-icon>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+      <button type="button" class="nav-item nav-gear" aria-label="Configurações" (click)="abrirConfig()">
+        <ion-icon name="settings-outline" aria-hidden="true"></ion-icon>
+      </button>
+    </nav>
+  </div>
+
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="page">
+    @if (erro) {
+      <p class="erro">{{ erro }}</p>
+    }
+
+    @if (carregando) {
+      <div class="vazio">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Abrindo rota…</p>
+      </div>
+    } @else if (!rota) {
+      <div class="vazio">
+        <strong>Rota não encontrada</strong>
+        <p>Ela pode ter sido excluída.</p>
+        <ion-button class="btn-secundario btn-compact" fill="outline" routerLink="/execucao">Voltar</ion-button>
+      </div>
+    } @else {
+      <!-- Resumo -->
+      <div class="cartao-topo resumo">
+        <div class="cartao-texto">
+          @if (rota.codigo) {
+            <p class="codigo mono">{{ rota.codigo }}</p>
+          }
+          <strong class="titulo-sm">{{ rota.nome }}</strong>
+          <small>{{ rota.equipeNome || 'Sem equipe' }}@if (rota.tecnicasLabel) { · {{ rota.tecnicasLabel }} }</small>
+        </div>
+        <span class="badge" [class]="rota.status">{{ rotuloStatus(rota.status) }}</span>
+      </div>
+
+      <div class="barra" style="margin-top:12px"><i [style.width.%]="pctGeral"></i></div>
+      <small class="progresso-txt">
+        {{ feitos }} feitos · {{ pulados }} pulados · {{ pendentes }} pendentes
+      </small>
+
+      @if (aviso) {
+        <p class="aviso">{{ aviso }}</p>
+      }
+
+      <!-- Painel da parada ativa -->
+      @if (paradaAtiva && rascunho && !fechada) {
+        <section class="painel">
+          <button type="button" class="link-voltar" (click)="fecharPainel()">Voltar à lista</button>
+          <p class="kicker">
+            {{ paradaAtiva.ordem }} de {{ rota.paradas.length }}
+            @if (proximaTag) { · a seguir {{ proximaTag }} } @else { · fim da sequência }
+          </p>
+          <h2 class="titulo-parada">
+            <span class="mono">{{ paradaAtiva.tag }}</span> · {{ paradaAtiva.nome }}
+          </h2>
+          <p class="subtitulo">{{ paradaAtiva.area || '' }}</p>
+
+          @for (tec of rota.tecnicas; track tec.id) {
+            <div class="campo">
+              <label>{{ tec.label }}{{ tec.unidade ? ' (' + tec.unidade + ')' : '' }}</label>
+              @if (tec.dica) {
+                <p class="dica">{{ tec.dica }}</p>
+              }
+
+              @if (tec.tipo === 'escolha') {
+                <div class="escolhas">
+                  @for (op of tec.opcoes || []; track op) {
+                    <button type="button" class="escolha"
+                            [class.ativo]="rascunho.valores[tec.id] === op"
+                            (click)="escolher(tec.id, op)">
+                      {{ op }}
+                    </button>
+                  }
+                </div>
+              } @else {
+                <input class="input-leitura"
+                       inputmode="decimal"
+                       [placeholder]="tec.placeholder || ''"
+                       [value]="rascunho.valores[tec.id] || ''"
+                       (input)="digitar(tec.id, $event)" />
+              }
+
+              <span class="selo" [class]="rascunho.julgamentos[tec.id] || 'normal'">
+                {{ rotuloJulgamento(rascunho.julgamentos[tec.id] || 'normal') }}
+              </span>
+            </div>
+          }
+
+          <ion-item lines="none" class="obs">
+            <ion-textarea
+              label="Observação do equipamento"
+              labelPlacement="stacked"
+              rows="2"
+              [value]="rascunho.observacao"
+              (ionInput)="obsChange($event)"
+            ></ion-textarea>
+          </ion-item>
+
+          <div class="acoes">
+            <ion-button class="btn-secundario" fill="outline" expand="block"
+                        [disabled]="ocupado" (click)="pular()">
+              Pular este
+            </ion-button>
+            <ion-button class="btn-primario" expand="block"
+                        [disabled]="ocupado" (click)="salvar()">
+              {{ ocupado ? 'Salvando…' : 'Salvar e próximo' }}
+            </ion-button>
+          </div>
+        </section>
+      } @else {
+        <!-- Lista de paradas -->
+        <h2 class="secao">Equipamentos</h2>
+        <p class="ajuda">Toque em qualquer um. A sequência segue a partir dele.</p>
+        <ol class="paradas">
+          @for (p of rota.paradas; track p.ordem) {
+            <li>
+              <button type="button" class="parada"
+                      [class.ativa]="paradaAtiva?.ordem === p.ordem"
+                      (click)="abrirParada(p)">
+                <span class="num mono">{{ p.ordem }}</span>
+                <span class="texto">
+                  <strong class="mono">{{ p.tag }}</strong>
+                  <small>{{ p.nome }}@if (p.area) { · {{ p.area }} }</small>
+                </span>
+                <span class="status" [class]="p.status">{{ rotuloParada(p.status) }}</span>
+              </button>
+            </li>
+          }
+        </ol>
+
+        @if (!fechada) {
+          <div class="rodape-exec">
+            <ion-button class="btn-primario" expand="block"
+                        [disabled]="ocupado || pendentes > 0"
+                        (click)="encerrar(false)">
+              {{ ocupado ? 'Gerando…' : 'Encerrar e gerar OS' }}
+            </ion-button>
+
+            @if (pendentes > 0) {
+              <p class="ajuda">Faltam {{ pendentes }} equipamentos, ou pule os pendentes.</p>
+              @if (confirmarPulo) {
+                <ion-button class="btn-secundario" fill="outline" expand="block"
+                            [disabled]="ocupado" (click)="encerrar(true)">
+                  Confirmar pular {{ pendentes }}
+                </ion-button>
+              } @else {
+                <ion-button class="btn-fantasma" fill="clear" expand="block"
+                            (click)="confirmarPulo = true">
+                  Pular pendentes
+                </ion-button>
+              }
+            }
+          </div>
+        } @else if (rota.osId) {
+          <ion-button class="btn-primario" expand="block" (click)="abrirOs()">
+            Abrir ordem de serviço
+          </ion-button>
+        }
+      }
+    }
+  </div>
+</ion-content>
