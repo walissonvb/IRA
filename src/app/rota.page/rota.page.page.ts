@@ -1,13 +1,11 @@
 import { Component} from '@angular/core';
 import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AppShellComponent } from '../app-shell/app-shell.component';
 import {
- IonHeader,
-  IonToolbar,
   IonContent,
   IonButton,
   IonSpinner,
-  IonIcon,
   ViewWillEnter,
   IonSearchbar
    } from '@ionic/angular';
@@ -57,12 +55,10 @@ const STATUS_LABEL: Record<string, string> = {
   styleUrls: ['./rota.page.page.scss'],
   standalone: true,
   imports: [
-    IonHeader,
-    IonToolbar,
+    AppShellComponent,
     IonContent,
     IonButton,
     IonSpinner,
-    IonIcon,
     RouterLink,
     IonSearchbar,
 

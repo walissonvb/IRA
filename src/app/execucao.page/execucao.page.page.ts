@@ -1,17 +1,10 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router,  } from '@angular/router';
 import {
-  IonHeader, IonToolbar, IonContent, IonButton, IonSpinner, IonButtons,
-  IonBackButton, IonItem, IonTextarea, ViewWillEnter, IonIcon
+   IonContent, IonButton, IonSpinner, IonItem,
+   ViewWillEnter, IonTextarea
 } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import {
-  gridOutline,
-  gitNetworkOutline,
-  checkboxOutline,
-  documentTextOutline,
-  settingsOutline,
-} from 'ionicons/icons';
+import { AppShellComponent } from '../app-shell/app-shell.component';
 
 export interface TecnicaExec {
   id: string;
@@ -84,9 +77,9 @@ const JULGAMENTO: Record<string, string> = {
   styleUrls: ['./execucao.page.page.scss'],
   standalone: true,
   imports: [
-    IonHeader, IonToolbar, IonContent, IonButton, IonSpinner,
-    IonButtons, IonBackButton, IonItem, IonTextarea, RouterLink,
-    IonSpinner, IonIcon
+    AppShellComponent,
+     IonContent, IonButton, IonSpinner,
+     IonTextarea, IonSpinner, IonItem
   ],
 })
 export class ExecucaoPagePage implements ViewWillEnter {

@@ -1,0 +1,140 @@
+:host {
+  --card-bg: #fffcf7;
+  --line: #e4dfd4;
+  --ink: #1c1915;
+  --muted: #6d675f;
+  --accent: #1f4e5f;
+  --accent-fg: #f7f4ee;
+  --radius-pill: 999px;
+  display: contents;
+}
+
+.shell-header {
+  overflow: visible;
+
+  ion-toolbar {
+    --background: var(--card-bg);
+    --border-width: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+    --min-height: auto;
+    --overflow: visible;
+  }
+}
+
+.shell-brand {
+  --padding-top: 10px;
+  --padding-bottom: 4px;
+  --padding-start: 4px;
+  --min-height: 52px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand-pad {
+  padding: 0 16px;
+}
+
+.brand-inline {
+  padding: 0 8px 0 0;
+  max-width: calc(100vw - 72px);
+}
+
+.brand-mark {
+  color: var(--accent);
+  display: flex;
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.brand-name {
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.brand-sub {
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shell-nav {
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--line);
+  padding: 4px 0 12px;
+}
+
+.nav-scroll {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  padding: 0 12px;
+  max-width: 100%;
+  scrollbar-width: none;
+}
+
+.nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.nav-item ion-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.nav-item.ativo {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.nav-item:not(.ativo):active {
+  background: rgba(31, 78, 95, 0.08);
+}
+
+.nav-gear {
+  margin-left: auto;
+  padding: 0 10px;
+}

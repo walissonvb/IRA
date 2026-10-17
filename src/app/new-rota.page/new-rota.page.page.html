@@ -1,0 +1,220 @@
+<app-shell
+  [showBack]="true"
+  defaultHref="/rotas"
+  title="Nova rota"
+  subtitle="IRANI"
+></app-shell>
+
+<ion-content [fullscreen]="true">
+  <div class="page">
+    @if (erro) {
+      <p class="erro">{{ erro }}</p>
+    }
+
+    <!-- Passos -->
+    <div class="passos" role="tablist" aria-label="Etapas da rota">
+      @for (label of passos; track label; let i = $index) {
+        <button
+          type="button"
+          class="passo"
+          [class.ativo]="passo === i"
+          [disabled]="i > passo"
+          (click)="irParaPasso(i)"
+        >
+          <span class="passo-num">{{ i + 1 }}</span>
+          <span class="passo-label">{{ label }}</span>
+        </button>
+      }
+    </div>
+
+    <!-- 0 Técnicas -->
+    @if (passo === 0) {
+      <section>
+        <p class="ajuda">Escolha uma ou mais técnicas. Na execução, cada uma pede um único campo.</p>
+        <div class="grade">
+          @for (t of tecnicasCatalogo; track t.id) {
+            <button
+              type="button"
+              class="cartao-sel"
+              [class.ativo]="tecnicasSelecionadas.includes(t.id)"
+              (click)="toggleTecnica(t.id)"
+            >
+              <span class="cartao-titulo">{{ t.label }}</span>
+              <span class="cartao-meta">{{ t.campo }}{{ t.unidade ? ' · ' + t.unidade : '' }}</span>
+            </button>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- 1 Equipe -->
+    @if (passo === 1) {
+      <section>
+        <p class="ajuda">Quem vai caminhar a rota.</p>
+        <div class="grade">
+          @for (eq of equipes; track eq.id) {
+            <button
+              type="button"
+              class="cartao-sel"
+              [class.ativo]="equipeId === eq.id"
+              (click)="equipeId = eq.id"
+            >
+              <span class="cartao-titulo">{{ eq.nome }}</span>
+              <span class="cartao-meta">{{ eq.especialidade || '' }} · {{ eq.turno || '' }}</span>
+            </button>
+          }
+        </div>
+
+        <button type="button" class="link-acao" (click)="mostrarFormEquipe = !mostrarFormEquipe">
+          {{ mostrarFormEquipe ? 'Cancelar' : 'Nova equipe' }}
+        </button>
+
+        @if (mostrarFormEquipe) {
+          <form class="bloco" (submit)="salvarEquipe($event)">
+            <ion-item lines="none">
+              <ion-input label="Nome" labelPlacement="stacked" placeholder="Preditiva A"
+                         [value]="formEquipe.nome"
+                         (ionInput)="formEquipe.nome = $any($event).detail.value || ''"></ion-input>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-input label="Especialidade" labelPlacement="stacked"
+                         [value]="formEquipe.especialidade"
+                         (ionInput)="formEquipe.especialidade = $any($event).detail.value || 'Preditiva'"></ion-input>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-input label="Turno" labelPlacement="stacked"
+                         [value]="formEquipe.turno"
+                         (ionInput)="formEquipe.turno = $any($event).detail.value || 'Manhã'"></ion-input>
+            </ion-item>
+            <ion-button class="btn-primario" expand="block" type="submit" [disabled]="ocupado">
+              Salvar equipe
+            </ion-button>
+          </form>
+        }
+      </section>
+    }
+
+    <!-- 2 Equipamentos -->
+    @if (passo === 2) {
+      <section>
+        <p class="ajuda">Toque para incluir. A ordem da lista é a ordem da vistoria.</p>
+
+        <ion-searchbar
+          class="busca"
+          placeholder="Tag, nome ou área"
+          [debounce]="150"
+          [value]="busca"
+          (ionInput)="onBusca($event)"
+        ></ion-searchbar>
+
+        <div class="filtros">
+          <button type="button" class="chip" [class.ativo]="areaFiltro === 'todas'" (click)="areaFiltro = 'todas'">Todas</button>
+          @for (a of areas; track a) {
+            <button type="button" class="chip" [class.ativo]="areaFiltro === a" (click)="areaFiltro = a">{{ a }}</button>
+          }
+        </div>
+
+        <div class="barra-lista">
+          <button type="button" class="link-acao" (click)="ordenarPorTag()">Ordenar seleção por TAG</button>
+          <button type="button" class="link-acao" (click)="incluirVisiveis()">Incluir visíveis em ordem de TAG</button>
+        </div>
+
+        <h2 class="secao">Na rota <span>{{ ordemIds.length }}</span></h2>
+        @if (ordemIds.length === 0) {
+          <p class="muted">Nenhum equipamento ainda.</p>
+        } @else {
+          <ol class="ordem">
+            @for (id of ordemIds; track id; let i = $index) {
+              @if (maquinaPorId(id); as m) {
+                <li class="ordem-item">
+                  <span class="ordem-num mono">{{ i + 1 }}</span>
+                  <div class="ordem-texto">
+                    <strong class="mono">{{ m.tag }}</strong>
+                    <small>{{ m.nome }} · {{ m.area }}</small>
+                  </div>
+                  <div class="ordem-botoes">
+                    <button type="button" [disabled]="i === 0" (click)="mover(i, -1)" aria-label="Subir">↑</button>
+                    <button type="button" [disabled]="i === ordemIds.length - 1" (click)="mover(i, 1)" aria-label="Descer">↓</button>
+                    <button type="button" (click)="removerDaOrdem(id)" aria-label="Remover">×</button>
+                  </div>
+                </li>
+              }
+            }
+          </ol>
+        }
+
+        <h2 class="secao">Equipamentos</h2>
+        <div class="lista-maq">
+          @for (m of maquinasVisiveis; track m.id) {
+            <button
+              type="button"
+              class="linha-maq"
+              [class.na-rota]="ordemIds.includes(m.id)"
+              (click)="toggleMaquina(m.id)"
+            >
+              <span class="tag mono">{{ m.tag }}</span>
+              <span class="linha-texto">
+                <strong>{{ m.nome }}</strong>
+                <small>{{ m.area }}</small>
+              </span>
+              <span class="linha-meta">{{ ordemIds.includes(m.id) ? 'Na rota' : '' }}</span>
+            </button>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- 3 Revisão -->
+    @if (passo === 3) {
+      <section>
+        <ion-item lines="none">
+          <ion-input
+            label="Nome da rota"
+            labelPlacement="stacked"
+            maxlength="80"
+            [value]="nomeRota"
+            (ionInput)="onNome($event)"
+          ></ion-input>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-textarea
+            label="Observação"
+            labelPlacement="stacked"
+            rows="3"
+            placeholder="Opcional"
+            [value]="observacoes"
+            (ionInput)="observacoes = $any($event).detail.value || ''"
+          ></ion-textarea>
+        </ion-item>
+
+        <article class="resumo">
+          <span>Técnicas</span>
+          <p>{{ rotuloTecnicas() }}</p>
+          <span>Equipe</span>
+          <p>{{ equipeSelecionada?.nome || '—' }}</p>
+          <span>Equipamentos ({{ ordemIds.length }})</span>
+          <ol>
+            @for (id of ordemIds; track id; let i = $index) {
+              @if (maquinaPorId(id); as m) {
+                <li class="mono">{{ i + 1 }}. {{ m.tag }} — {{ m.nome }}</li>
+              }
+            }
+          </ol>
+        </article>
+      </section>
+    }
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-toolbar>
+    <div class="rodape-acoes">
+      <ion-button class="btn-secundario" fill="outline" [disabled]="passo === 0 || ocupado" (click)="voltar()">
+        Voltar
+      </ion-button>
+      <ion-button class="btn-primario" [disabled]="!podeAvancar() || ocupado" (click)="continuar()">
+        {{ passo === 3 ? (ocupado ? 'Salvando…' : 'Criar rota') : 'Continuar' }}
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

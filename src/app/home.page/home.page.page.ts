@@ -1,14 +1,12 @@
 
 import { Component} from '@angular/core';
+import { AppShellComponent } from '../app-shell/app-shell.component';
 import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import {
- IonHeader,
-  IonToolbar,
   IonContent,
   IonButton,
   IonSpinner,
-  IonIcon,
   ViewWillEnter,
    } from '@ionic/angular';
 import { addIcons } from 'ionicons';
@@ -82,12 +80,10 @@ const JULGAMENTO_LABEL: Record<string, string> = {
   styleUrls: ['./home.page.page.scss'],
   standalone: true,
   imports: [
-    IonHeader,
-    IonToolbar,
+    AppShellComponent,
     IonContent,
     IonButton,
     IonSpinner,
-    IonIcon,
     RouterLink,
   ],
 })
