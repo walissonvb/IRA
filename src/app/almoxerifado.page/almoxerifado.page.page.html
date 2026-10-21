@@ -1,0 +1,35 @@
+  <app-shell></app-shell>
+  <ion-content class="ion-padding">
+    <div class="topo">
+      <div>
+        <p class="kicker">Estoque</p>
+        <h1>Almoxarifado</h1>
+      </div>
+      <ion-button [fill]="aberto ? 'outline' : 'solid'" (click)="aberto = !aberto">{{ aberto ? 'Fechar' : 'Novo item' }}</ion-button>
+    </div>
+    @if (erro) { <p class="erro">{{ erro }}</p> }
+    @if (aberto) {
+      <div class="bloco">
+        <ion-input label="Código" label-placement="stacked" [value]="codigo" (ionInput)="codigo = $any($event).detail.value"></ion-input>
+        <ion-input label="Nome" label-placement="stacked" [value]="nome" (ionInput)="nome = $any($event).detail.value"></ion-input>
+        <ion-input label="Unidade" label-placement="stacked" [value]="unidade" (ionInput)="unidade = $any($event).detail.value"></ion-input>
+        <ion-input label="Endereço" label-placement="stacked" [value]="endereco" (ionInput)="endereco = $any($event).detail.value"></ion-input>
+        <ion-input label="Quantidade" label-placement="stacked" [value]="qtd" (ionInput)="qtd = $any($event).detail.value"></ion-input>
+        <ion-input label="Mínimo" label-placement="stacked" [value]="minimo" (ionInput)="minimo = $any($event).detail.value"></ion-input>
+        <ion-button expand="block" [disabled]="ocupado" (click)="salvar()">Salvar item</ion-button>
+      </div>
+    }
+    <ion-input placeholder="Código, nome ou endereço" [value]="busca" (ionInput)="aoBuscar($event)"></ion-input>
+    @for (item of filtrados(); track item.id) {
+      <article class="linha">
+        <span class="texto">
+          <strong>{{ item.codigo }} · {{ item.nome }}</strong>
+          <small>{{ item.endereco || "Sem endereço" }} · mín. {{ item.minimo }} {{ item.unidade }}</small>
+        </span>
+        <strong class="mono">{{ item.qtd }}</strong>
+        @if (baixo(item)) { <span class="selo critico">Baixo</span> }
+        <button type="button" class="chip" (click)="ajustar(item.id, -1)">−</button>
+        <button type="button" class="chip" (click)="ajustar(item.id, 1)">+</button>
+      </article>
+    }
+  </ion-content>

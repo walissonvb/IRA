@@ -1,78 +1,17 @@
 
-import { Component} from '@angular/core';
+import { Component, OnInit, inject} from '@angular/core';
 import { AppShellComponent } from '../app-shell/app-shell.component';
-import { Router, RouterLink, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import {
+  IonProgressBar,
   IonContent,
   IonButton,
-  IonSpinner,
-  ViewWillEnter,
+ 
    } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import {
-  gridOutline,
-  gitNetworkOutline,
-  checkboxOutline,
-  documentTextOutline,
-  settingsOutline,
-} from 'ionicons/icons';
 
-/** Formato que a tela espera — implemente no seu serviço de dados. */
-export interface DashboardStat {
-  label: string;
-  value: number;
-  link: string;
-}
+import { Alerta, Rota, ROTULO_JULGAMENTO, ROTULO_STATUS_ROTA, rotuloTecnica} from '../data/modelos';
+import { Dados } from '../data/dados';
 
-export interface DashboardRota {
-  id: string;
-  nome: string;
-  equipeNome?: string;
-  status: string;
-  doneCount: number;
-  stopCount: number;
-}
-
-export interface DashboardAlerta {
-  id: string;
-  tag: string;
-  machineName: string;
-  techniqueLabel: string;
-  reading: string;
-  judgment: string;
-  recordedLabel?: string;
-  sourceLabel?: string;
-  link?: string;
-}
-export interface DashboardData {
-  todayLabel: string;
-  machineCount: number;
-  openRoutes: number;
-  openOrders: number;
-  lowStock: number;
-  routes: DashboardRota[];
-  alerts: DashboardAlerta[];
-}
-export interface NavItem {
-  path: string;
-  label: string;
-  icon: string;
-  exact?: boolean;
-  ativo?: boolean;
-}
-
-const STATUS_LABEL: Record<string, string> = {
-  planejada: 'Planejada',
-  em_execucao: 'Em execução',
-  concluida: 'Concluída',
-};
-
-const JULGAMENTO_LABEL: Record<string, string> = {
-  normal: 'Normal',
-  atencao: 'Atenção',
-  critico: 'Crítico',
-};
 
 @Component({
   selector: 'app-home.page',
@@ -83,136 +22,54 @@ const JULGAMENTO_LABEL: Record<string, string> = {
     AppShellComponent,
     IonContent,
     IonButton,
-    IonSpinner,
-    RouterLink,
+    IonProgressBar
   ],
 })
-export class HomePagePage implements ViewWillEnter {
-  carregando = true;
-  erro = '';
-  kicker = 'Planta Norte';
+export class HomePagePage implements OnInit {
+  private dados = inject(Dados);
+  private router = inject(Router);
 
-  stats: DashboardStat[] = [];
-  rotas: DashboardRota[] = [];
-  alertas: DashboardAlerta[] = [];
+  hoje = "";
+  maquinas = 0;
+  rotasAbertas = 0;
+  osAbertas = 0;
+  abaixoMinimo = 0;
+  rotas: Rota[] = [];
+  alertas: Alerta[] = [];
+  erro = "";
+  readonly statusRota = ROTULO_STATUS_ROTA;
+  readonly julgamento = ROTULO_JULGAMENTO;
 
-  /** Abas do cabeçalho — ajuste os paths se o IRA usar outros */
-    nav: NavItem[] = [
-    { path: '/home.page', label: 'Painel', icon: 'grid-outline', exact: true },
-    { path: '/rota.page', label: 'Rotas', icon: 'git-network-outline' },
-    { path: '/execucao.page', label: 'Executar', icon: 'checkbox-outline' },
-    { path: '/ordens', label: 'Ordens', icon: 'document-text-outline' },
-  ];
-
-
-  constructor(private router: Router) {
-
-        addIcons({
-      gridOutline,
-      gitNetworkOutline,
-      checkboxOutline,
-      documentTextOutline,
-      settingsOutline,
-    });
-
-    this.router.events
-      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-      .subscribe(() => this.atualizarAbaAtiva());
-
-    this.atualizarAbaAtiva();
-  }
-
-  ionViewWillEnter(): void {
-    this.atualizarAbaAtiva();
-    void this.carregar();
-  }
-
-  private atualizarAbaAtiva(): void {
-    const url = this.router.url.split('?')[0];
-    this.nav = this.nav.map((item) => ({
-      ...item,
-      ativo: item.exact
-        ? url === item.path || url === '/' || url === '/home'
-        : url === item.path || url.startsWith(item.path + '/'),
-    }));
-  }
-
-  async carregar(): Promise<void> {
-    this.carregando = true;
-    this.erro = '';
-
+  async ngOnInit() {
     try {
-      const data = await this.obterDashboard();
-
-      this.kicker = `Planta Norte · ${data.todayLabel || this.hojeLabel()}`;
-
-      this.stats = [
-        { label: 'Máquinas', value: data.machineCount ?? 0, link: '/maquinas' },
-        { label: 'Rotas abertas', value: data.openRoutes ?? 0, link: '/lista-rotas' },
-        { label: 'OS abertas', value: data.openOrders ?? 0, link: '/ordens' },
-        { label: 'Abaixo do mínimo', value: data.lowStock ?? 0, link: '/almoxarifado' },
-      ];
-
-      this.rotas = data.routes ?? [];
-      this.alertas = data.alerts ?? [];
-    } catch (e) {
-      this.erro = e instanceof Error ? e.message : 'Não foi possível carregar o painel.';
-      this.stats = [];
-      this.rotas = [];
-      this.alertas = [];
-    } finally {
-      this.carregando = false;
+      const painel = await this.dados.obterDashboard();
+      this.hoje = painel.hoje;
+      this.maquinas = painel.maquinas;
+      this.rotasAbertas = painel.rotasAbertas;
+      this.osAbertas = painel.osAbertas;
+      this.abaixoMinimo = painel.abaixoMinimo;
+      this.rotas = painel.rotas;
+      this.alertas = painel.alertas;
+    } catch (err) {
+      this.erro = err instanceof Error ? err.message : "Não foi possível abrir o painel.";
     }
   }
 
-  /**
-   * PONTO ÚNICO DE DADOS
-   * Substitua pelo seu serviço (Firebase, API, SQLite…).
-   */
-  private async obterDashboard(): Promise<DashboardData> {
-    return {
-      todayLabel: this.hojeLabel(),
-      machineCount: 12,
-      openRoutes: 2,
-      openOrders: 1,
-      lowStock: 2,
-      routes: [],
-      alerts: [],
-    };
+  feitos(rota: Rota) {
+    return rota.paradas.filter((item) => item.status === "feito").length;
   }
 
-  progresso(rota: DashboardRota): number {
-    if (!rota.stopCount) return 0;
-    return Math.round((rota.doneCount / rota.stopCount) * 100);
+  progresso(rota: Rota) {
+    return rota.paradas.length ? this.feitos(rota) / rota.paradas.length : 0;
   }
 
-  rotuloStatus(status: string): string {
-    return STATUS_LABEL[status] || status || '—';
+  leitura(alerta: Alerta) {
+    return `${rotuloTecnica(alerta.tecnicaId)} · ${alerta.valor}${alerta.unidade ? ` ${alerta.unidade}` : ""}`;
   }
 
-  rotuloJulgamento(valor: string): string {
-    return JULGAMENTO_LABEL[valor] || valor || '—';
+  ir(url: string) {
+    void this.router.navigateByUrl(url);
   }
-
-  abrir(link: string): void {
-    if (link) void this.router.navigateByUrl(link);
-  }
-
-  abrirExecucao(id: string): void {
-    void this.router.navigate(['/execucao', id]);
-  }
-
-  abrirConfig(): void {
-    void this.router.navigateByUrl('/config');
-  }
-
-  private hojeLabel(): string {
-    const d = new Date();
-    const dd = String(d.getDate()).padStart(2, '0');
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    return `${dd}/${mm}/${d.getFullYear()}`;
-  }
-
   }
 
 

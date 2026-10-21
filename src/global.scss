@@ -35,3 +35,446 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+/* Cole este arquivo no src/global.scss do Ionic (ou importe de lá).
+   Não há SCSS por página: o visual de todas as telas fica aqui. */
+
+:root {
+  --ion-color-primary: #1f4e5f;
+  --ion-color-primary-rgb: 31, 78, 95;
+  --ion-color-primary-contrast: #f7f4ee;
+  --ion-color-primary-shade: #1b4554;
+  --ion-color-primary-tint: #35606f;
+  --ion-background-color: #f3f1ec;
+  --ion-text-color: #1c1915;
+  --ion-font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  --ronda-paper: #fffcf7;
+  --ronda-line: #e4dfd4;
+  --ronda-muted: #6d675f;
+  --ronda-ok: #1f6b45;
+  --ronda-ok-bg: #e5f2ea;
+  --ronda-atencao: #9a4d12;
+  --ronda-atencao-bg: #f8ecdf;
+  --ronda-critico: #8d2a2a;
+  --ronda-critico-bg: #f8e6e4;
+}
+
+ion-content {
+  --background: var(--ion-background-color);
+}
+
+ion-toolbar {
+  --background: var(--ronda-paper);
+  --border-color: var(--ronda-line);
+}
+
+ion-button {
+  --border-radius: 12px;
+  min-height: 44px;
+  font-weight: 650;
+}
+
+app-shell ion-toolbar {
+  --background: var(--ronda-paper);
+}
+
+app-shell .marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-inline: 16px;
+  min-height: 52px;
+}
+
+app-shell .marca strong,
+app-shell .marca small {
+  display: block;
+  line-height: 1.2;
+}
+
+app-shell .marca small {
+  color: var(--ronda-muted);
+  font-size: 13px;
+}
+
+app-shell .logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 22% 72%, #f7f4ee 2.2px, transparent 2.4px),
+    radial-gradient(circle at 50% 50%, #f7f4ee 2.2px, transparent 2.4px),
+    radial-gradient(circle at 78% 28%, #f7f4ee 2.2px, transparent 2.4px),
+    #1f4e5f;
+}
+
+app-shell .abas {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 0 12px 12px;
+  background: var(--ronda-paper);
+  border-bottom: 1px solid var(--ronda-line);
+}
+
+app-shell .abas a {
+  flex: 0 0 auto;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: var(--ronda-muted);
+  text-decoration: none;
+  font-weight: 650;
+  font-size: 14px;
+}
+
+app-shell .abas a.ativa {
+  background: #1f4e5f;
+  color: #f7f4ee;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.55rem;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  margin: 18px 0 8px;
+  font-size: 1.05rem;
+}
+
+.kicker,
+.ajuda,
+.sub,
+small {
+  color: var(--ronda-muted);
+}
+
+.kicker {
+  margin: 0;
+  font-size: 14px;
+}
+
+.topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.acoes,
+.filtros,
+.atalhos,
+.escolhas,
+.rodape {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rodape {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  padding: 8px 12px 12px;
+}
+
+.stats,
+.grade {
+  display: grid;
+  gap: 8px;
+}
+
+.stats {
+  grid-template-columns: 1fr 1fr;
+  margin-top: 12px;
+}
+
+.grade {
+  grid-template-columns: 1fr 1fr;
+}
+
+.stat,
+.cartao,
+.linha,
+.bloco,
+.resumo,
+.ordem li,
+.parada,
+.painel {
+  background: var(--ronda-paper);
+  border: 1px solid var(--ronda-line);
+  border-radius: 16px;
+}
+
+.stat,
+.cartao,
+.linha,
+.parada {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+
+.stat strong {
+  display: block;
+  margin-top: 6px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 1.6rem;
+}
+
+.cartao strong,
+.cartao span,
+.cartao small,
+.linha strong,
+.linha small,
+.parada strong,
+.parada small {
+  display: block;
+}
+
+.erro,
+.aviso {
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin: 8px 0;
+}
+
+.erro {
+  background: var(--ronda-critico-bg);
+  color: var(--ronda-critico);
+}
+
+.aviso {
+  background: #e7eef1;
+  color: #1f4e5f;
+}
+
+.estado,
+.selo {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.estado,
+.selo,
+.estado.planejada,
+.estado.aberta {
+  background: #e7eef1;
+  color: #1f4e5f;
+}
+
+.estado.em_execucao,
+.estado.em_andamento,
+.estado.atencao,
+.selo.atencao,
+.estado.pulado {
+  background: var(--ronda-atencao-bg);
+  color: var(--ronda-atencao);
+}
+
+.estado.concluida,
+.estado.feito,
+.estado.operando,
+.selo.normal {
+  background: var(--ronda-ok-bg);
+  color: var(--ronda-ok);
+}
+
+.estado.parado,
+.estado.cancelada,
+.selo.critico {
+  background: var(--ronda-critico-bg);
+  color: var(--ronda-critico);
+}
+
+.passos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.passo,
+.chip,
+.escolha,
+.ordem button,
+.link {
+  font: inherit;
+}
+
+.passo,
+.chip,
+.escolha {
+  min-height: 44px;
+  border: 1px solid var(--ronda-line);
+  border-radius: 12px;
+  background: var(--ronda-paper);
+  color: var(--ronda-muted);
+  font-weight: 650;
+}
+
+.passo.ativo,
+.chip.ativo,
+.escolha.ativo,
+.cartao.ativo {
+  background: #1f4e5f;
+  color: #f7f4ee;
+  border-color: #1f4e5f;
+}
+
+.cartao.ativo small {
+  color: rgba(247, 244, 238, 0.82);
+}
+
+.linha,
+.parada {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.linha:disabled {
+  opacity: 0.45;
+}
+
+.tag,
+.num,
+.mono {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-weight: 650;
+}
+
+.texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.ordem {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ordem li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.ordem button {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--ronda-line);
+  background: #fff;
+}
+
+.campo label {
+  display: block;
+  font-weight: 650;
+  margin-bottom: 6px;
+}
+
+.campo input,
+.campo textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--ronda-line);
+  border-radius: 12px;
+  background: #fff;
+  color: #1c1915;
+  font: inherit;
+  padding: 10px 12px;
+}
+
+.campo input.grande {
+  min-height: 64px;
+  font: 650 1.6rem/1 "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.folha {
+  margin-top: 12px;
+  background: #fff;
+  border: 1px solid var(--ronda-line);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.cabeca,
+.meta,
+.item,
+.assinaturas {
+  display: grid;
+  gap: 12px;
+}
+
+.cabeca {
+  grid-template-columns: 1fr auto;
+  border-bottom: 1px solid var(--ronda-line);
+  padding-bottom: 12px;
+}
+
+.meta {
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--ronda-line);
+  padding: 12px 0;
+}
+
+.item {
+  grid-template-columns: 1.1fr 1fr 0.8fr 0.9fr;
+  border-top: 1px solid var(--ronda-line);
+  padding: 10px 0;
+}
+
+.assinaturas {
+  grid-template-columns: 1fr 1fr;
+  margin-top: 48px;
+}
+
+.assinaturas div {
+  border-top: 1px solid #1c1915;
+  padding-top: 6px;
+  color: var(--ronda-muted);
+  font-size: 13px;
+}
+
+.lado,
+.julgamento {
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .item,
+  .cabeca {
+    grid-template-columns: 1fr;
+  }
+
+  .lado,
+  .julgamento {
+    text-align: left;
+  }
+}
+
+@media print {
+  .no-print,
+  app-shell,
+  ion-header,
+  ion-footer {
+    display: none !important;
+  }
+
+  .folha {
+    border: 0;
+  }
+}

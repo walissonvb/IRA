@@ -23,6 +23,8 @@ const DEFAULT_NAV: ShellNavItem[] = [
   { path: '/rota.page', label: 'Rotas', icon: 'git-network-outline' },
   { path: '/execucao.page', label: 'Executar', icon: 'checkbox-outline' },
   { path: '/ordens', label: 'Ordens', icon: 'document-text-outline' },
+  { path: '/maquina.page', label: 'Máquinas', icon: 'car-outline' },
+  {path: '/almoxerifado.page', label: 'Almoxerifado', icon: 'cube-outline'},
   
 ];
 

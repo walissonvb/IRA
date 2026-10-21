@@ -1,0 +1,70 @@
+  <app-shell></app-shell>
+  <ion-content class="ion-padding">
+    <div class="topo">
+      <div>
+        <p class="kicker">Cadastro</p>
+        <h1>Máquinas</h1>
+      </div>
+      <ion-button (click)="modo === 'form' ? modo = 'lista' : nova()">{{ modo === 'form' ? 'Fechar' : 'Nova' }}</ion-button>
+    </div>
+    @if (erro) { <p class="erro">{{ erro }}</p> }
+
+    @if (modo === 'form') {
+      <div class="bloco">
+        <ion-input label="TAG" label-placement="stacked" [value]="tag" (ionInput)="tag = $any($event).detail.value"></ion-input>
+        <ion-input label="Nome" label-placement="stacked" [value]="nome" (ionInput)="nome = $any($event).detail.value"></ion-input>
+        <ion-input label="Área" label-placement="stacked" [value]="area" (ionInput)="area = $any($event).detail.value"></ion-input>
+        <ion-select label="Criticidade" label-placement="stacked" [value]="criticidade" (ionChange)="criticidade = $any($event).detail.value">
+          <ion-select-option value="A">A</ion-select-option>
+          <ion-select-option value="B">B</ion-select-option>
+          <ion-select-option value="C">C</ion-select-option>
+        </ion-select>
+        <ion-select label="Status" label-placement="stacked" [value]="status" (ionChange)="status = $any($event).detail.value">
+          <ion-select-option value="operando">Operando</ion-select-option>
+          <ion-select-option value="atencao">Atenção</ion-select-option>
+          <ion-select-option value="parado">Parado</ion-select-option>
+        </ion-select>
+        <ion-textarea label="Notas" label-placement="stacked" [value]="notas" (ionInput)="notas = $any($event).detail.value"></ion-textarea>
+        <ion-button expand="block" [disabled]="ocupado" (click)="salvar()">Salvar</ion-button>
+      </div>
+    } @else if (selecionada) {
+      <button type="button" class="link" (click)="selecionada = null">Voltar à lista</button>
+      <article class="cartao">
+        <span class="mono">{{ selecionada.tag }}</span>
+        <strong>{{ selecionada.nome }}</strong>
+        <small>{{ selecionada.area }} · Criticidade {{ selecionada.criticidade }}</small>
+        <span class="estado {{ selecionada.status }}">{{ statusLabel[selecionada.status || 'operando'] }}</span>
+        @if (selecionada.notas) { <p>{{ selecionada.notas }}</p> }
+      </article>
+      <h2>Peças</h2>
+      @for (peca of selecionada.pecas; track peca.id) {
+        <div class="linha">
+          <span class="texto"><strong>{{ peca.codigo }}</strong><small>{{ peca.nome }} · {{ peca.qtd }}</small></span>
+          <button type="button" class="chip" (click)="tirarPeca(peca.id)">Tirar</button>
+        </div>
+      }
+      <div class="bloco">
+        <ion-input label="Código da peça" label-placement="stacked" [value]="pecaCodigo" (ionInput)="pecaCodigo = $any($event).detail.value"></ion-input>
+        <ion-input label="Nome" label-placement="stacked" [value]="pecaNome" (ionInput)="pecaNome = $any($event).detail.value"></ion-input>
+        <ion-input label="Quantidade" label-placement="stacked" [value]="pecaQtd" (ionInput)="pecaQtd = $any($event).detail.value"></ion-input>
+        <ion-button expand="block" (click)="adicionarPeca()">Incluir peça</ion-button>
+      </div>
+      <div class="acoes">
+        <ion-button fill="outline" (click)="editar()">Editar</ion-button>
+        @if (confirmar) {
+          <ion-button color="danger" [disabled]="ocupado" (click)="excluir()">Confirmar exclusão</ion-button>
+        } @else {
+          <ion-button fill="clear" (click)="confirmar = true">Excluir</ion-button>
+        }
+      </div>
+    } @else {
+      <ion-input placeholder="TAG, nome ou área" [value]="busca" (ionInput)="aoBuscar($event)"></ion-input>
+      @for (maquina of filtradas(); track maquina.id) {
+        <button type="button" class="linha" (click)="abrir(maquina)">
+          <span class="tag">{{ maquina.tag }}</span>
+          <span class="texto"><strong>{{ maquina.nome }}</strong><small>{{ maquina.area }}</small></span>
+          <span class="estado {{ maquina.status }}">{{ statusLabel[maquina.status || 'operando'] }}</span>
+        </button>
+      }
+    }
+  </ion-content>

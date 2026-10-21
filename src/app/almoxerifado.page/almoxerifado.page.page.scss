@@ -1,0 +1,38 @@
+// especifico do estoque
+:host { display: block; }
+
+.almoxarifado {
+  &__topo {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  &__alerta {
+    margin-bottom: 16px;
+  }
+
+  &__nivel {
+    min-width: 140px;
+  }
+
+  &__barra {
+    height: 6px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--app-surface-2, #1d242e);
+    margin-top: 6px;
+  }
+
+  &__preenchimento {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--app-primary, #2f81f7);
+
+    &--baixo  { background: var(--app-warning, #d29922); }
+    &--critico { background: var(--app-danger, #f85149); }
+  }
+}

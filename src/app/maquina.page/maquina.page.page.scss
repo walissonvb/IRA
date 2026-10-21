@@ -1,0 +1,43 @@
+// especifico da frota
+:host { display: block; }
+
+.maquinas {
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  &__topo-card {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  &__placa {
+    margin: 0;
+    font-size: 17px;
+  }
+
+  &__modelo {
+    font-size: 12px;
+    color: var(--app-text-muted, #8b97a6);
+    margin: 2px 0 0;
+  }
+
+  &__dados {
+    dt { font-size: 12px; color: var(--app-text-muted, #8b97a6); }
+    dd { margin: 0 0 6px; font-size: 14px; }
+  }
+
+  &__historico {
+    width: 100%;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 900px) {
+    &__grid { grid-template-columns: 1fr; }
+  }
+}

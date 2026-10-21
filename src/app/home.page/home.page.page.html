@@ -1,111 +1,40 @@
-<!-- ========== CABEÇALHO (logo + abas) ========== -->
-<app-shell
-  [showBack]="false"
-  defaultHref="/rotas"
-  title="Painel"
-  subtitle="PCM · IRANI"
-></app-shell>
-
-<!-- ========== CONTEÚDO ========== -->
-<ion-content [fullscreen]="true">
-  <div class="page">
-    @if (erro) {
-      <p class="erro">{{ erro }}</p>
-    }
-
-    <p class="kicker">{{ kicker }}</p>
-    <h1 class="titulo">Hoje na manutenção</h1>
-    <p class="subtitulo">
-      Monte a ronda, execute na sequência dos equipamentos e feche com a ordem de serviço.
-    </p>
-
+  <app-shell></app-shell>
+  <ion-content class="ion-padding">
+    <p class="kicker">Planta Norte · {{ hoje }}</p>
+    <h1>Hoje na manutenção</h1>
+    <p class="ajuda">Monte a ronda, execute na sequência dos equipamentos e feche com a ordem de serviço.</p>
+    @if (erro) { <p class="erro">{{ erro }}</p> }
     <div class="acoes">
-      <ion-button class="btn-primario" routerLink="/new-rota.page" routerDirection="forward">
-        Nova rota
-      </ion-button>
-      <ion-button class="btn-secundario" fill="outline" routerLink="/lista-rotas" routerDirection="forward">
-        Executar
-      </ion-button>
+      <ion-button (click)="ir('/nova-rota')">Nova rota</ion-button>
+      <ion-button fill="outline" (click)="ir('/execucao')">Executar</ion-button>
     </div>
-
-    <section class="stats" aria-label="Indicadores">
-      @for (stat of stats; track stat.label) {
-        <button type="button" class="stat" (click)="abrir(stat.link)">
-          <span class="stat-label">{{ stat.label }}</span>
-          <span class="stat-valor">{{ stat.value }}</span>
-        </button>
-      }
+    <section class="stats">
+      <button type="button" class="stat" (click)="ir('/maquina.page')"><span>Máquinas</span><strong>{{ maquinas }}</strong></button>
+      <button type="button" class="stat" (click)="ir('/execucao')"><span>Rotas abertas</span><strong>{{ rotasAbertas }}</strong></button>
+      <button type="button" class="stat" (click)="ir('/ordens')"><span>OS abertas</span><strong>{{ osAbertas }}</strong></button>
+      <button type="button" class="stat" (click)="ir('/almoxarifado')"><span>Abaixo do mínimo</span><strong>{{ abaixoMinimo }}</strong></button>
     </section>
-
-    <section class="bloco">
-      <h2 class="secao">Rotas para executar</h2>
-
-      @if (carregando) {
-        <div class="vazio">
-          <ion-spinner name="crescent"></ion-spinner>
-          <p>Carregando rotas…</p>
-        </div>
-      } @else if (rotas.length === 0) {
-        <div class="vazio">
-          <strong>Nenhuma rota aberta</strong>
-          <p>Crie uma rota com as técnicas e a ordem dos equipamentos.</p>
-        </div>
-      } @else {
-        <ul class="lista">
-          @for (rota of rotas; track rota.id) {
-            <li>
-              <button type="button" class="cartao" (click)="abrirExecucao(rota.id)">
-                <div class="cartao-topo">
-                  <div class="cartao-texto">
-                    <strong>{{ rota.nome }}</strong>
-                    <small>{{ rota.equipeNome || 'Sem equipe' }}</small>
-                  </div>
-                  <span class="badge" [class]="rota.status">{{ rotuloStatus(rota.status) }}</span>
-                </div>
-                <div class="barra" role="progressbar"
-                     [attr.aria-valuenow]="rota.doneCount"
-                     [attr.aria-valuemax]="rota.stopCount">
-                  <i [style.width.%]="progresso(rota)"></i>
-                </div>
-                <small class="progresso-txt">
-                  {{ rota.doneCount }} de {{ rota.stopCount }} equipamentos
-                </small>
-              </button>
-            </li>
-          }
-        </ul>
-      }
-    </section>
-
-    <section class="bloco">
-      <h2 class="secao">Desvios recentes</h2>
-
-      @if (!carregando && alertas.length === 0) {
-        <div class="vazio">
-          <strong>Sem desvios</strong>
-          <p>Leituras de atenção e críticas aparecem aqui.</p>
-        </div>
-      } @else {
-        <ul class="lista">
-          @for (a of alertas; track a.id) {
-            <li>
-              <button type="button" class="cartao" (click)="abrir(a.link || '/lista-rotas')">
-                <div class="cartao-topo">
-                  <div class="cartao-texto">
-                    <strong class="mono">{{ a.tag }}</strong>
-                    <small>{{ a.machineName }}</small>
-                    <small>{{ a.techniqueLabel }} · {{ a.reading }}</small>
-                    @if (a.recordedLabel) {
-                      <small class="faint">{{ a.recordedLabel }} · {{ a.sourceLabel }}</small>
-                    }
-                  </div>
-                  <span class="badge" [class]="a.judgment">{{ rotuloJulgamento(a.judgment) }}</span>
-                </div>
-              </button>
-            </li>
-          }
-        </ul>
-      }
-    </section>
-  </div>
-</ion-content>
+    <h2>Rotas para executar</h2>
+    @if (rotas.length === 0) { <p class="ajuda">Nenhuma rota aberta.</p> }
+    @for (rota of rotas; track rota.id) {
+      <button type="button" class="cartao" (click)="ir('/execucao/' + rota.id)">
+        <span class="mono">{{ rota.code }}</span>
+        <strong>{{ rota.nome }}</strong>
+        <small>{{ rota.equipeNome }}</small>
+        <ion-progress-bar [value]="progresso(rota)"></ion-progress-bar>
+        <small>{{ feitos(rota) }} de {{ rota.paradas.length }} equipamentos</small>
+        <span class="estado {{ rota.status }}">{{ statusRota[rota.status] }}</span>
+      </button>
+    }
+    <h2>Desvios recentes</h2>
+    @if (alertas.length === 0) { <p class="ajuda">Sem desvios.</p> }
+    @for (alerta of alertas; track alerta.id) {
+      <button type="button" class="cartao" (click)="ir('/monitoramento?maq=' + alerta.maquinaId)">
+        <span class="mono">{{ alerta.tag }}</span>
+        <small>{{ alerta.nome }}</small>
+        <span>{{ leitura(alerta) }}</span>
+        <small>{{ alerta.quando }} · {{ alerta.origem === 'rota' ? 'Rota' : 'Monitor' }}</small>
+        <span class="selo {{ alerta.julgamento }}">{{ julgamento[alerta.julgamento] }}</span>
+      </button>
+    }
+  </ion-content>
